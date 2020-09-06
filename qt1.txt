@@ -1,0 +1,57 @@
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
+#include<QPainter>
+#include<QPen>
+#include<QBrush>
+#include<QPixmap>
+#include<QPoint>
+#include<QMouseEvent>
+#include<QPalette>
+#include<QString>
+#include<QMouseEvent>
+#include<QMessageBox>
+
+MainWindow::MainWindow(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+    setFixedSize(1000,1000);//设置窗口大小
+    setWindowTitle("六子棋小游戏");//设置标题
+    setAutoFillBackground(true);//设置背景
+    QPalette palette;
+    palette.setColor(QPalette::Background,QColor("#EEC070"));//选择颜色
+    setPalette(palette);//设置背景色
+    memset(a,0,20*20*sizeof (int));//初始化数组
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+void MainWindow::paintEvent(QPaintEvent *)
+{
+    QPainter painter(this);//定义画家
+    painter.drawPixmap(0,0,width(),height(),QPixmap());
+    painter.setRenderHint(QPainter::Antialiasing,true);//抗锯齿
+
+    QPen pen;//定义画笔
+    pen.setWidth(3);//设置线宽
+    pen.setColor(Qt::black);//设置颜色
+    painter.setPen(pen);//将画笔交给画家
+
+    //画20*20棋盘，小格子40*40
+    for(int i=0;i<21;i++)
+    {
+        painter.drawLine(40+i*40,50,40+i*40,50+20*40);//纵线 初始x=40,y=50
+        painter.drawLine(40,50+i*40,40+20*40,50+i*40);//横线
+    }
+    QBrush brush;//定义画刷
+    brush.setColor(Qt::black);//定义颜色
+    brush.setStyle(Qt::SolidPattern);//定义填充样式
+    painter.setBrush(brush);//将画刷交给画家
+    painter.drawEllipse(40+10*40+4-10,50+10*40+4-10,10,10);//画小圆
+
+
+
+}
