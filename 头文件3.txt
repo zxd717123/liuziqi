@@ -1,0 +1,26 @@
+#define MAINWINDOW_H
+
+#include <QMainWindow>
+
+namespace Ui {
+class MainWindow;
+}
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow();
+
+private:
+    Ui::MainWindow *ui;
+    void paintEvent(QPaintEvent *event);//绘图函数
+    int a[20][20];
+    int player=2;//重要
+    int b=-1,c=-1;//注意：不能取（0，0），一个顶上的黑子会多余
+    void mouseMoveEvent(QMouseEvent *event);//鼠标函数
+};
+
+#endif // MAINWINDOW_H
