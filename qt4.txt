@@ -1,0 +1,126 @@
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
+#include<QPainter>
+#include<QPen>
+#include<QBrush>
+#include<QPixmap>
+#include<QPoint>
+#include<QMouseEvent>
+#include<QPalette>
+#include<QString>
+#include<QMouseEvent>
+#include<QMessageBox>
+
+MainWindow::MainWindow(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+    setFixedSize(1000,1000);//设置窗口大小
+    setWindowTitle("六子棋小游戏");//设置标题
+    setAutoFillBackground(true);//设置背景
+    QPalette palette;
+    palette.setColor(QPalette::Background,QColor("#EEC070"));//选择颜色
+    setPalette(palette);//设置背景色
+    memset(a,0,20*20*sizeof (int));//初始化数组
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+void MainWindow::paintEvent(QPaintEvent *)
+{
+    QPainter painter(this);//定义画家
+    painter.drawPixmap(0,0,width(),height(),QPixmap());
+    painter.setRenderHint(QPainter::Antialiasing,true);//抗锯齿
+
+    QPen pen;//定义画笔
+    pen.setWidth(3);//设置线宽
+    pen.setColor(Qt::black);//设置颜色
+    painter.setPen(pen);//将画笔交给画家
+
+    //画20*20棋盘，小格子40*40
+    for(int i=0;i<21;i++)
+    {
+        painter.drawLine(40+i*40,50,40+i*40,50+20*40);//纵线 初始x=40,y=50
+        painter.drawLine(40,50+i*40,40+20*40,50+i*40);//横线
+    }
+    QBrush brush;//定义画刷
+    brush.setColor(Qt::black);//定义颜色
+    brush.setStyle(Qt::SolidPattern);//定义填充样式
+    painter.setBrush(brush);//将画刷交给画家
+    painter.drawEllipse(40+10*40+4-10,50+10*40+4-10,10,10);//画小圆
+
+    //画棋子，在第i行第j列画圆，40距离左边的空隙，50距离上边的空隙
+    for(int i=0;i<20;i++)
+    {
+        for(int j=0;j<20;j++)
+        {
+            if(a[i][j]==1)//黑子
+            {
+                brush.setColor(Qt::black);
+                painter.setBrush(brush);//(j+1)*40代表最左边的距离，(i+1)*40+10)代表最上边的距离
+                painter.drawEllipse(QPoint((j+1)*40,(i+1)*40+10),20,20);
+            }
+            else if(a[i][j]==2)//白子
+            {   brush.setColor(Qt::white);
+                painter.setBrush(brush);
+                painter.drawEllipse(QPoint((j+1)*40,(i+1)*40+10),20,20);
+            }
+        }
+    }
+
+
+}
+void MainWindow::mouseMoveEvent(QMouseEvent *event)
+{   int x=event->x();//获取鼠标点击位置
+    int y=event->y();
+    int l;//距离
+    int k=(x-40)/40,r=(y-50)/40;//
+    int posx=40+40*k;//按规矩的落子点位
+    int posy=50+40*r;
+    //判断落子坐标位置(x,y)
+    if(x>40&&x<840&&y>50&&y<850)//棋盘x长840，y长850，鼠标点击位置在棋盘范围内
+    {   l=sqrt((x-posx)*(x-posx)+(y-posy)*(y-posy));
+        if(l<10){
+            b=r;c=k;
+        }
+        l=sqrt((x-posx-40)*(x-posx-40)+(y-posy)*(y-posy));
+        if(l<10)
+        {
+            b=r;c=k+1;//+1->a[][]中的j
+        }
+        l=sqrt((x-posx)*(x-posx)+(y-posy-40)*(y-posy-40));
+        if(l<10)
+        {
+             b=r+1;c=k;//+1->a[][]中的i
+        }
+        l=sqrt((x-posx-40)*(x-posx-40)+(y-posy-40)*(y-posy-40));
+        if(l<10)
+        {
+             b=r+1;c=k+1;
+        }
+    }
+    //保证下棋的合法性,设置小弹窗提醒
+    else {
+        QMessageBox::information(this,QStringLiteral("注意"),QStringLiteral("不在棋盘内，请重下。"),QMessageBox::Ok);
+    }
+
+    this->update();//存坐标，重绘
+}
+
+void MainWindow::mouseReleaseEvent(QMouseEvent *)
+{
+    if(!a[b][c])
+    {
+        a[b][c]=player %2+1;//黑棋先手，判断下黑子还是白子
+        player++;
+    }
+    if(Win(b,c))
+    {
+        update();
+        QMessageBox::information(this,QStringLiteral("Black"),QStringLiteral("Win!"),QMessageBox::Ok);
+    }
+    update();
+}
