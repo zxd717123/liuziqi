@@ -1,0 +1,67 @@
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
+#include<QPainter>
+#include<QPen>
+#include<QBrush>
+#include<QPixmap>
+#include<QPoint>
+#include<QMouseEvent>
+#include<QPalette>
+#include<QString>
+#include<QMouseEvent>
+#include<QMessageBox>
+#include<QMovie>
+#include<QLabel>
+//构造函数
+MainWindow::MainWindow(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+    setWindowTitle("六子棋");//设置主界面标题
+    setFixedSize(500,600);//设置窗口大小（主界面）
+
+    //人人对战按钮
+    ppbutton=new QPushButton(this);
+    ppbutton->setText("人人对战");
+    ppbutton->setGeometry(150,200,200,100);//设置按钮位置
+    //建立联系,链接信号与槽函数
+    connect(ppbutton,SIGNAL(clicked()),this,SLOT(showMainwindow2()));
+    //处理子窗口信号
+    connect(&w2,&MainWindow2::Mysignal,this,&MainWindow::dealmainwindow2);
+
+    //人机对战按钮
+    pcbutton=new QPushButton(this);
+    pcbutton->setText("人机对战");
+    pcbutton->setGeometry(150,400,200,100);//设置按钮位置
+    //建立联系,链接信号与槽函数
+    connect(pcbutton,SIGNAL(clicked()),this,SLOT(showMainwindow2()));
+    //处理子窗口信号
+    connect(&w2,&MainWindow2::Mysignal,this,&MainWindow::dealmainwindow2);
+}
+
+void MainWindow::paintEvent(QPaintEvent *)
+{
+    //设置主界面背景
+    QPainter painter(this);//定义画家
+    painter.drawPixmap(0,0,width(),height(),QPixmap("://1.jpg"));
+    painter.setRenderHint(QPainter::Antialiasing,true);//抗锯齿
+}
+
+void MainWindow::dealmainwindow2()
+{
+    w2.hide();//隐藏子界面
+    this->show();
+}
+
+void MainWindow::showMainwindow2()
+{
+    w2.show();//显示子界面
+}
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+
+
