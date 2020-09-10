@@ -1,0 +1,36 @@
+#ifndef MAINWINDOW2_H
+#define MAINWINDOW2_H
+#include <QMainWindow>
+#include<QPushButton>
+
+namespace Ui {
+class MainWindow2;
+}
+
+class MainWindow2 : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow2(QWidget *parent = nullptr);
+    ~MainWindow2();
+    void sendslot();//发送信号槽函数
+
+private:
+    Ui::MainWindow2 *ui;
+    void paintEvent(QPaintEvent *event);//绘图函数
+    int a[20][20];
+    int player=2;//重要
+    int b=-1,c=-1;//注意：不能取（0，0），一个顶上的黑子会多余
+    void mouseMoveEvent(QMouseEvent *event);//鼠标函数
+    void mouseReleaseEvent(QMouseEvent *event);//落子函数
+    int Win(int,int);
+    int s1(int,int);int s2(int,int);
+    int s3(int,int);int s4(int,int);
+    QPushButton *rbutton;
+
+signals:
+    void Mysignal();//返回值信号
+};
+
+#endif // MAINWINDOW2_H
