@@ -1,0 +1,35 @@
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+#include <QMainWindow>
+#include<QLabel>
+#include<QString>
+#include<QPushButton>
+#include<mainwindow2.h>
+
+//头文件
+namespace Ui {
+class MainWindow;
+}
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = nullptr);
+    ~MainWindow();
+    void dealmainwindow2();//处理子窗口槽函数
+
+private:
+    Ui::MainWindow *ui;
+    QPushButton *ppbutton;//定义人人对战按钮
+    QPushButton *pcbutton;//定义人机对战按钮
+    QPushButton *rbutton;
+    MainWindow2 w2;//声明新窗口
+    void paintEvent(QPaintEvent *event);//绘图函数
+
+private slots:
+    void showMainwindow2();//显示子页面槽函数
+};
+
+#endif // MAINWINDOW_H
