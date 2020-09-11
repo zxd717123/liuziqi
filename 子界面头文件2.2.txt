@@ -1,0 +1,43 @@
+#ifndef MAINWINDOW3_H
+#define MAINWINDOW3_H
+
+#include <QMainWindow>
+#include<QPushButton>
+
+namespace Ui {
+class MainWindow3;
+}
+
+class MainWindow3 : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow3(QWidget *parent = nullptr);
+    ~MainWindow3();
+     void sendslot();
+     int score[20][20];
+     int max;
+     void count();//计算评分
+     void pcbeat(int &clickx,int &clicky);
+     void updatedesk(int r,int k);
+     void actionAI();
+     void paintEvent(QPaintEvent *event);//绘图函数
+     void mouseMoveEvent(QMouseEvent *event);//鼠标函数
+     void mouseReleaseEvent(QMouseEvent *event);//落子函数
+private:
+    Ui::MainWindow3 *ui;
+    int a[20][20];
+    int player=1;//重要
+    int b=-1,c=-1;//注意：不能取（0，0），一个顶上的黑子会多余
+    int Win(int,int);
+    int s1(int,int);int s2(int,int);
+    int s3(int,int);int s4(int,int);
+    QPushButton *rbutton2;
+
+
+signals:
+    void Mysignal2();
+};
+
+#endif // MAINWINDOW3_H
